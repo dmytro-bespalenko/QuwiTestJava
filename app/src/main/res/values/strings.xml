@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">QuwiTestJava</string>
+
+    <string name="action_sign_in">Sign In</string>
+    <string name="action_create_account">Create Account</string>
+    <string name="field_email">Email</string>
+    <string name="field_password">Password</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email_wrong">The email address or password is incorrect.</string>
+</resources>
