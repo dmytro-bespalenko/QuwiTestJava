@@ -1,4 +1,4 @@
-package com.example.quwitestjava.data.response.channels;
+package com.example.quwitestjava.data.response;
 
 import java.util.List;
 
@@ -11,5 +11,9 @@ public class ChannelResponse {
 
     public List<Channels> getChannels() {
         return channels;
+    }
+
+    public void setChannels(List<Channels> channels) {
+        this.channels = channels;
     }
 }

@@ -1,10 +1,9 @@
 package com.example.quwitestjava.data.api;
 
 import com.example.quwitestjava.data.LoginResponse;
-import com.example.quwitestjava.data.response.channels.ChannelResponse;
+import com.example.quwitestjava.data.response.ChannelResponse;
 
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -15,7 +14,7 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST("auth/login")
-    Call<LoginResponse> login(
+    Observable<LoginResponse> login(
             @Field("email") String email,
             @Field("password") String password
     );

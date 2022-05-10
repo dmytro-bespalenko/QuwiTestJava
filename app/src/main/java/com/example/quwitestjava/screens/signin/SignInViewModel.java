@@ -1,16 +1,11 @@
 package com.example.quwitestjava.screens.signin;
 
-import static com.example.quwitestjava.helper.Constants.PERSISTANT_STORAGE_NAME;
-
-import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.quwitestjava.App;
 import com.example.quwitestjava.data.LoginResponse;
 import com.example.quwitestjava.helper.Event;
 import com.example.quwitestjava.repository.AccountsRepository;
@@ -21,49 +16,55 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 @HiltViewModel
 public class SignInViewModel extends ViewModel {
 
     private final AccountsRepository repository;
+    private final SharedPreferences preference;
 
-    private final SharedPreferences settings = App.getAppContext().getSharedPreferences(PERSISTANT_STORAGE_NAME, Context.MODE_PRIVATE);
-    private final SharedPreferences.Editor editor = settings.edit();
 
     private final MutableLiveData<Event<LoginState>> _isSuccess = new MutableLiveData<>();
     public LiveData<Event<LoginState>> isResponseSuccess = _isSuccess;
 
     @Inject
-    public SignInViewModel(AccountsRepository repository) {
+    public SignInViewModel(AccountsRepository repository, SharedPreferences preference) {
         this.repository = repository;
+        this.preference = preference;
     }
 
 
     public void login(String email, String password) {
 
-        repository.login(email, password).enqueue(
-                new Callback<LoginResponse>() {
-                    @Override
-                    public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> loginResponse) {
-                        if (loginResponse.isSuccessful()) {
-                            _isSuccess.setValue(new Event<>(LoginState.LoginSuccessfulState));
-                            editor.putString("token", Objects.requireNonNull(loginResponse.body()).getToken());
-                            editor.apply();
-                        } else {
-                            _isSuccess.setValue(new Event<>(LoginState.LoginErrorState));
-                        }
+        repository.login(email, password)
+                .map(LoginResponse::getToken)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<String>() {
+                               @Override
+                               public void onSubscribe(Disposable d) {
 
-                    }
+                               }
 
-                    @Override
-                    public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-                        _isSuccess.setValue(new Event<>(LoginState.LoginErrorState));
-                    }
-                }
-        );
+                               @Override
+                               public void onNext(String token) {
+                                   preference.edit().putString("token", Objects.requireNonNull(token)).apply();
+                               }
+
+                               @Override
+                               public void onError(Throwable e) {
+                                   _isSuccess.postValue(new Event<>(LoginState.LoginErrorState));
+                               }
+
+                               @Override
+                               public void onComplete() {
+                                   _isSuccess.postValue(new Event<>(LoginState.LoginSuccessfulState));
+
+                               }
+                           }
+                );
     }
 
 

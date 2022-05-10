@@ -2,12 +2,11 @@ package com.example.quwitestjava.repository;
 
 import com.example.quwitestjava.data.LoginResponse;
 import com.example.quwitestjava.data.api.ApiService;
-import com.example.quwitestjava.data.response.channels.ChannelResponse;
+import com.example.quwitestjava.data.response.ChannelResponse;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import retrofit2.Call;
 
 public class AccountsDataSource {
 
@@ -18,7 +17,7 @@ public class AccountsDataSource {
         this.service = service;
     }
 
-    public Call<LoginResponse> login(String email, String password) {
+    public Observable<LoginResponse> login(String email, String password) {
         return service.login(email, password);
     }
 
