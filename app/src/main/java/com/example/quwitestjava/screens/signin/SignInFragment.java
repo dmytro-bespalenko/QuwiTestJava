@@ -54,7 +54,9 @@ public class SignInFragment extends Fragment {
 
         });
 
+
         binding.signInButton.setOnClickListener(v -> login());
+        binding.signUpButton.setOnClickListener(v -> Toast.makeText(requireContext(), R.string.email_wrong, Toast.LENGTH_SHORT).show());
 
     }
 

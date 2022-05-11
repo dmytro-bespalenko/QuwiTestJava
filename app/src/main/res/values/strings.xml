@@ -8,4 +8,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="email_wrong">The email address or password is incorrect.</string>
+    <string name="registration_screen"> Go to the registration screen.</string>
 </resources>
